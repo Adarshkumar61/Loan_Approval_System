@@ -11,8 +11,8 @@
 
   <!-- IMAGE SLOT 1 -->
   <h2>📸 Project Preview</h2>
-  <p style="opacity:0.8;">(Add your screenshots here)</p>
-  <img src="ADD_IMAGE_URL_HERE"
+  <p style="opacity:0.8;"></p>
+  <img src="loan_approval__ui.png"
        alt="Project Screenshot"
        style="width:100%; max-width:700px; border-radius:16px; margin:15px 0; box-shadow:0 15px 40px rgba(0,0,0,0.2);">
 
