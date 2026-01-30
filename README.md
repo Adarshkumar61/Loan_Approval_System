@@ -126,8 +126,8 @@ Make sure you have the following installed:
 <h3 style="text-align:center;">⬇️ Clone the Repository</h3>
 
 <pre style="background:#0f172a; color:#e5e7eb; padding:18px; border-radius:12px; max-width:700px; margin:auto; text-align:left;">
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git
-cd YOUR_REPOSITORY_NAME
+git clone https://github.com/adarshkumar61/Loan_Approval_System.git
+cd Loan_Approval_System
 </pre>
 
 <br>
