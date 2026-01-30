@@ -1,0 +1,493 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Loan Predictor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* ================= BACKGROUND LAYERS ================= */
+
+/* Blurred background */
+.bg-blur {
+    position: fixed;
+    inset: 0;
+    /* background: url("static/hospital.png") center / cover no-repeat; */
+    filter: blur(14px);
+    transform: scale(1.1);
+    z-index: -4;
+}
+
+/* Clear background spotlight layer */
+.bg-clear {
+    position: fixed;
+    inset: 0;
+    background: url("/static/bg.jpg") center / cover no-repeat;
+    z-index: -3;
+    pointer-events: none;
+
+    -webkit-mask-image: radial-gradient(circle 0px at center, black 0%, transparent 100%);
+    mask-image: radial-gradient(circle 0px at center, black 0%, transparent 100%);
+}
+
+/* Cinematic mouse glow */
+.mouse-glow {
+    position: fixed;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(
+        circle,
+        rgba(56,189,248,0.35),
+        rgba(37,99,235,0.18),
+        transparent 65%
+    );
+    filter: blur(45px);
+    transform: translate(-50%, -50%);
+    z-index: -2;
+}
+
+/* ================= PAGE LAYOUT ================= */
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #020617;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+/* Main card */
+.card {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 420px;
+    padding: 22px;
+    border-radius: 22px;
+    background: rgba(2, 6, 23, 0.85);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
+}
+
+/* Profile section */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    animation: slideDown 0.8s ease;
+}
+
+.avatar {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #38bdf8, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.profile span {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-12px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+/* Inputs */
+input {
+    width: 100%;
+    padding: 13px;
+    margin-top: 12px;
+    border-radius: 14px;
+    border: none;
+    font-size: 15px;
+}
+
+input:focus {
+    outline: 2px solid #38bdf8;
+}
+
+/* Button */
+button {
+    width: 100%;
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 16px;
+    border: none;
+    font-size: 16px;
+    background: linear-gradient(135deg, #38bdf8, #2563eb);
+    color: white;
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+button:hover {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    color: white;
+}
+/* Result box */
+.result {
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 16px;
+    text-align: center;
+    display: none;
+    font-weight: bold;
+}
+
+.approved {
+    background: #16a34a;
+}
+
+.rejected {
+    background: #dc2626;
+}
+</style>
+</head>
+
+<body>
+
+BACKGROUND EFFECTS
+<div class="bg-blur"></div>
+<div class="bg-clear" id="bgClear"></div>
+<div class="mouse-glow" id="mouseGlow"></div>
+
+MAIN UI
+<div class="card">
+
+    <div class="profile">
+        <div class="avatar">A</div>
+        <div>
+            <strong>Hii Adarsh 😊</strong><br>
+            <span>AI Loan Prediction</span>
+        </div>
+    </div>
+
+    <h2>Loan Eligibility</h2>
+
+    <input id="age" type="number" placeholder="Age">
+    <input id="income" type="number" placeholder="Annual Income">
+    <input id="credit" type="number" placeholder="Credit Score">
+
+    <button onclick="predict()">Check Eligibility</button>
+
+    <div id="result" class="result"></div>
+
+</div>
+
+<script>
+
+
+const glow = document.getElementById("mouseGlow");
+const bgClear = document.getElementById("bgClear");
+
+let mouseX = 0, mouseY = 0;
+let smoothX = 0, smoothY = 0;
+
+document.addEventListener("mousemove", e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+function animate() {
+    smoothX += (mouseX - smoothX) * 0.08;
+    smoothY += (mouseY - smoothY) * 0.08;
+
+    glow.style.left = smoothX + "px";
+    glow.style.top = smoothY + "px";
+
+    const mask = `
+        radial-gradient(
+            circle 180px at ${smoothX}px ${smoothY}px,
+            black 0%,
+            transparent 70%
+        )
+    `;
+
+    bgClear.style.webkitMaskImage = mask;
+    bgClear.style.maskImage = mask;
+
+    requestAnimationFrame(animate);
+}
+animate();
+
+
+function predict() {
+    const age = document.getElementById("age").value;
+    const income = document.getElementById("income").value;
+    const credit = document.getElementById("credit").value;
+    const result = document.getElementById("result");
+
+    if (!age || !income || !credit) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    fetch("/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            age: Number(age),
+            income: Number(income),
+            credit_score: Number(credit)
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        result.style.display = "block";
+        result.className = "result " + (data.status === "Approved" ? "approved" : "rejected");
+        result.innerHTML = `
+            ${data.status}<br>
+            Confidence: ${data.confidence}%
+        `;
+    });
+}
+</script>
+
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Loan Approval System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ===== PAGE BACKGROUND ===== */
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #020617;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+}
+
+/* Optional blurred background image */
+.bg {
+    position: fixed;
+    inset: 0;
+    background: url("/static/bg.jpg") center / cover no-repeat;
+    filter: blur(14px);
+    opacity: 0.35;
+    z-index: -1;
+}
+
+/* ===== MAIN CARD ===== */
+.card {
+    width: 100%;
+    max-width: 460px;
+    background: rgba(2, 6, 23, 0.88);
+    padding: 22px;
+    border-radius: 20px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+}
+
+/* ===== HEADER / PROFILE ===== */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #78f5c9, #238bd0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.profile small {
+    opacity: 0.75;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+/* ===== FORM ELEMENTS ===== */
+label {
+    font-size: 14px;
+    margin-top: 12px;
+    display: block;
+    opacity: 0.85;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+}
+
+input:focus, select:focus {
+    outline: 2px solid #38bdf8;
+}
+
+/* ===== BUTTON ===== */
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    font-size: 16px;
+    background: linear-gradient(135deg, #38bdf8, #2563eb);
+    color: white;
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+/* ===== RESULT ===== */
+.result {
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 14px;
+    text-align: center;
+    display: none;
+    font-weight: bold;
+}
+
+.approved {
+    background: #16a34a;
+}
+
+.rejected {
+    background: #dc2626;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="card">
+
+    <div class="profile">
+        <div class="avatar">A</div>
+        <div>
+            <strong>Hii <b>Adarsh</b> 😊</strong><br>
+            <small>AI Loan Approval System</small>
+        </div>
+    </div>
+
+    <h2>Loan Approval Prediction</h2>
+
+    <!-- ===== INPUTS MATCHING REAL DATASET ===== -->
+
+    <label>City</label>
+    <input id="city" type="text" placeholder="Enter city name">
+
+    <label>Monthly Income</label>
+    <input id="income" type="number" placeholder="e.g. 50000">
+
+    <label>Credit Score</label>
+    <input id="credit_score" type="number" placeholder="e.g. 650">
+
+    <label>Loan Amount</label>
+    <input id="loan_amount" type="number" placeholder="e.g. 200000">
+
+    <label>Years Employed</label>
+    <input id="years_employed" type="number" placeholder="e.g. 5">
+
+    <label>Points</label>
+    <input id="points" type="number" step="0.1" placeholder="e.g. 45.5">
+
+    <button onclick="predict()">Check Loan Status</button>
+
+    <div id="result" class="result"></div>
+
+</div>
+
+<script>
+function predict() {
+    const resultBox = document.getElementById("result");
+
+    const payload = {
+        city: document.getElementById("city").value.trim(),
+        income: Number(document.getElementById("income").value),
+        credit_score: Number(document.getElementById("credit_score").value),
+        loan_amount: Number(document.getElementById("loan_amount").value),
+        years_employed: Number(document.getElementById("years_employed").value),
+        points: Number(document.getElementById("points").value)
+    };
+
+    // Basic validation
+    for (let key in payload) {
+        if (payload[key] === "" || Number.isNaN(payload[key])) {
+            alert("Please fill all fields correctly.");
+            return;
+        }
+    }
+
+    fetch("/predict", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        resultBox.style.display = "block";
+        resultBox.className =
+            "result " + (data.loan_status === "Approved" ? "approved" : "rejected");
+
+        resultBox.innerHTML = `
+            ${data.loan_status}<br>
+            Confidence: ${data.confidence}%
+        `;
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Server error. Please try again.");
+    });
+}
+</script>
+
+</body>
+</html>
