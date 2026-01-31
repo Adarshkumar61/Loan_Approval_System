@@ -9,7 +9,7 @@
 
   <hr style="margin:30px 0;">
 
-  <!-- IMAGE SLOT 1 -->
+ 
   <h2>📸 Project Preview</h2>
   <p style="opacity:0.8;"></p>
   <img src="loan_approval__ui.png"
@@ -68,7 +68,7 @@ Frontend UI Update
 
   <hr style="margin:40px 0;">
 
-  <!-- IMAGE SLOT 2 -->
+
   <h2>🎬 Cinematic UI Effects</h2>
   <p style="opacity:0.85; max-width:750px; margin:auto;">
     The interface uses layered backgrounds, blur filters, radial masks, and smooth animations
