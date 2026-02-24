@@ -2,6 +2,7 @@
 
 import pandas as pd
 import pickle
+from pathlib import Path
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
@@ -12,8 +13,9 @@ from sklearn.metrics import accuracy_score
 
 # ================= LOAD DATA =================
 
-data = pd.read_csv("loan_approval.csv")  
-# rename above file if needed
+project_root = Path(__file__).resolve().parent.parent
+data_path = project_root / "Data" / "loan_approval.csv"
+data = pd.read_csv(data_path)
 
 # ================= CLEAN DATA =================
 
@@ -21,7 +23,8 @@ data = pd.read_csv("loan_approval.csv")
 data = data.drop(columns=["name"])
 
 # Convert target to binary
-data["loan_approved"] = data["loan_approved"].map({True: 1, False: 0})
+data["loan_approved"] = data["loan_approved"].astype(str).str.strip().str.lower()
+data["loan_approved"] = data["loan_approved"].map({"true": 1, "false": 0})
 
 # Remove missing values (safe, realistic)
 data = data.dropna()
@@ -79,7 +82,8 @@ print(f"Testing Accuracy : {test_acc:.2f}")
 
 # ================= SAVE MODEL =================
 
-with open("model.pkl", "wb") as f:
+model_path = project_root / "model.pkl"
+with open(model_path, "wb") as f:
     pickle.dump(model, f)
 
-print("✅ Model trained and saved as model.pkl")
+print(f"Model trained and saved as {model_path}")

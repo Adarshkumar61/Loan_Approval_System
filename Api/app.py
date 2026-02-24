@@ -1,36 +1,36 @@
-# # import os
-# # from fastapi import FastAPI
-# # from pydantic import BaseModel
-# # import pickle
-# # from fastapi.responses import HTMLResponse
+# import os
+# from fastapi import FastAPI
+# from pydantic import BaseModel
+# import pickle
+# from fastapi.responses import HTMLResponse
 
-# # app = FastAPI()
+# app = FastAPI()
 
-# # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# # MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
-# # HTML_PATH = os.path.join(BASE_DIR, "front_end.html")
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
+# HTML_PATH = os.path.join(BASE_DIR, "front_end.html")
 
-# # model = pickle.load(open(MODEL_PATH, "rb"))
+# model = pickle.load(open(MODEL_PATH, "rb"))
 
-# # class UserData(BaseModel):
-# #     age: int
-# #     income: int
+# class UserData(BaseModel):
+#     age: int
+#     income: int
 
-# # @app.post("/predict")
-# # def predict(data: UserData):
-# #     prediction = model.predict([[data.age, data.income]])
-# #     return {
-# #         "loan_status": "Approved" if prediction[0] == 1 else "Rejected"
-# #     }
+# @app.post("/predict")
+# def predict(data: UserData):
+#     prediction = model.predict([[data.age, data.income]])
+#     return {
+#         "loan_status": "Approved" if prediction[0] == 1 else "Rejected"
+#     }
 
-# # @app.get("/")
-# # def home():
-# #     return {"message": "API is running"}
+# @app.get("/")
+# def home():
+#     return {"message": "API is running"}
 
-# # @app.get("/ui", response_class=HTMLResponse)
-# # def serve_ui():
-# #     with open(HTML_PATH, "r", encoding="utf-8") as f:
-# #         return f.read()
+# @app.get("/ui", response_class=HTMLResponse)
+# def serve_ui():
+#     with open(HTML_PATH, "r", encoding="utf-8") as f:
+#         return f.read()
 # # To run the app, use the command:
 # # uvicorn api_test.app:app --reload
 
@@ -89,10 +89,11 @@ from fastapi.staticfiles import StaticFiles
 app = FastAPI()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
 
-MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
-HTML_PATH = os.path.join(BASE_DIR, "front_end.html")
-STATIC_PATH = os.path.join(BASE_DIR, "static")
+MODEL_PATH = os.path.join(PROJECT_ROOT, "model.pkl")
+HTML_PATH = os.path.join(PROJECT_ROOT, "Frontend", "front_end.html")
+STATIC_PATH = os.path.join(PROJECT_ROOT, "static")
 
 # ================= LOAD MODEL (ONCE) =================
 model = pickle.load(open(MODEL_PATH, "rb"))
@@ -132,3 +133,5 @@ def serve_ui():
 
     with open(HTML_PATH, "r", encoding="utf-8") as f:
         return f.read()
+
+
