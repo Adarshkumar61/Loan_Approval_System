@@ -1,6 +1,6 @@
 <div style="font-family:Segoe UI, Arial, sans-serif; max-width:900px; margin:auto; text-align:center; line-height:1.6;">
 
-  <h1>🚀 AI Loan Eligibility Prediction Web App</h1>
+  <h1>🚀 AI Loan Eligibility Prediction Web App</h1>  
 
   <p style="font-size:18px; opacity:0.85;">
     A full-stack Machine Learning web application that predicts loan eligibility using a trained ML model,
